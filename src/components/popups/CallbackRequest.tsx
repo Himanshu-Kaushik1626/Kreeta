@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { X, Phone, MessageCircle, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { PHONE_RAW, WHATSAPP_URL } from "@/lib/constants";
+import { PHONE_RAW, WHATSAPP_PHONE, WHATSAPP_URL } from "@/lib/constants";
 import { isValidPhone } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { services } from "@/data/services";
@@ -45,7 +45,7 @@ export function CallbackRequest() {
     // Wait 5s before allowing any popup (global rule)
     const delayTimer = setTimeout(() => {
       // 25-second timer
-      const showTimer = setTimeout(() => setShow(true), 25000);
+      const showTimer = setTimeout(() => setShow(true), 40000);
 
       // Exit intent on desktop
       const handleMouseLeave = (e: MouseEvent) => {
@@ -77,7 +77,7 @@ export function CallbackRequest() {
         document.removeEventListener("mouseleave", handleMouseLeave);
         window.removeEventListener("scroll", handleScroll);
       };
-    }, 5000);
+    }, 10000);
 
     return () => clearTimeout(delayTimer);
   }, [isMobile]);
@@ -103,7 +103,7 @@ export function CallbackRequest() {
       `📞 *Callback Request — Kreeta Nursing Service*`,
       ``,
       `*Name:* ${name.trim()}`,
-      `*Phone:* +91-${phone}`,
+      `*Phone:* ${phone}`,
       service ? `*Service:* ${service}` : "",
       ``,
       `_Please call me back._`,
@@ -112,7 +112,7 @@ export function CallbackRequest() {
       .filter(Boolean)
       .join("\n");
 
-    const waUrl = `https://wa.me/${PHONE_RAW}?text=${encodeURIComponent(waMessage)}`;
+    const waUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(waMessage)}`;
     window.open(waUrl, "_blank");
 
     setSubmitted(true);
@@ -240,17 +240,14 @@ export function CallbackRequest() {
                       </div>
 
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-text-muted">
-                          +91
-                        </span>
                         <input
                           type="tel"
-                          placeholder="Mobile number"
+                          placeholder="10-digit mobile number"
                           value={phone}
                           onChange={(e) =>
                             setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
                           }
-                          className="w-full pl-12 pr-4 py-3 rounded-[var(--radius-md)] border border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all"
                         />
                       </div>
 

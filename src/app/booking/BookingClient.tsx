@@ -351,8 +351,8 @@ ${form.notes ? `- *Notes:* ${form.notes}` : ""}`;
                               {isSelected && <Check className="w-4 h-4 text-primary shrink-0" />}
                             </div>
                             <p className="text-[11px] text-text-muted line-clamp-1">{svc.description}</p>
-                            <div className="text-[11px] font-bold text-primary mt-1">
-                              From {svc.pricing[0] ? `₹${svc.pricing[0].price}` : "Affordable rates"}
+                            <div className="text-[11px] font-semibold text-primary mt-1">
+                              Pricing: On Call
                             </div>
                           </div>
                         );
@@ -719,7 +719,7 @@ ${form.notes ? `- *Notes:* ${form.notes}` : ""}`;
                         </label>
                         <input
                           type="tel"
-                          placeholder="+91 98765 43210"
+                          placeholder="98765 43210"
                           value={form.contactPhone}
                           onChange={(e) => setForm({ ...form, contactPhone: e.target.value })}
                           className="w-full px-3.5 py-2.5 rounded-[var(--radius-md)] border border-border text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"

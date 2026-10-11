@@ -5,8 +5,9 @@
 export const SITE_NAME = "Kreeta Nursing Service";
 export const TAGLINE = "Trusted Healthcare, At Your Doorstep";
 
-export const PHONE = "+91-8865888772";
-export const PHONE_RAW = "918865888772";
+export const PHONE = "8865888772";
+export const PHONE_RAW = "8865888772";
+export const WHATSAPP_PHONE = "918865888772";
 export const EMAIL = "info@kreetanursingservice.com";
 
 export const ADDRESS = {
@@ -20,9 +21,9 @@ export const ADDRESS = {
 
 export const OFFICE_HOURS = "24x7 Service | Office: 9 AM – 7 PM";
 
-export const WHATSAPP_URL = `https://wa.me/${PHONE_RAW}`;
+export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_PHONE}`;
 export const WHATSAPP_MSG = (service?: string) =>
-  `https://wa.me/${PHONE_RAW}?text=${encodeURIComponent(
+  `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
     `Hi Kreeta Nursing Service, I need help with ${service || "your services"}. Please contact me.`
   )}`;
 
@@ -47,10 +48,8 @@ export const CITY_SLUGS: Record<City, string> = {
 };
 
 export const SOCIAL_LINKS = {
-  facebook: "https://facebook.com/kreetanursingservice",
-  instagram: "https://instagram.com/kreetanursingservice",
-  linkedin: "https://linkedin.com/company/kreetanursingservice",
-  youtube: "https://youtube.com/@kreetanursingservice",
+  facebook: "https://www.facebook.com/share/14yc4WfSNnU/",
+  instagram: "https://www.instagram.com/kreetanursingservice?stkn=YWFwd280azk5aTc1",
 };
 
 export const GOOGLE_MAPS_EMBED =

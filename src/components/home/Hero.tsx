@@ -123,7 +123,7 @@ export function Hero() {
     const message = [
       `*New Service Request — Kreeta Nursing Service*`,
       `• *Name:* ${formData.name.trim()}`,
-      `• *Phone:* +91-${formData.phone.trim()}`,
+      `• *Phone:* ${formData.phone.trim()}`,
       `• *Service:* ${formData.service || "Nursing / Healthcare Consultation"}`,
       `• *City / Area:* ${formData.city || "Delhi NCR"}`,
       formData.notes ? `• *Requirement:* ${formData.notes.trim()}` : null,
@@ -358,14 +358,11 @@ export function Hero() {
                       Mobile Number <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-500">
-                        +91
-                      </span>
                       <input
                         type="tel"
                         required
                         maxLength={10}
-                        placeholder="10-digit number"
+                        placeholder="10-digit mobile number"
                         value={formData.phone}
                         onChange={(e) =>
                           setFormData({
@@ -373,7 +370,7 @@ export function Hero() {
                             phone: e.target.value.replace(/\D/g, ""),
                           })
                         }
-                        className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary-100 transition-all text-sm outline-none"
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary-100 transition-all text-sm outline-none"
                       />
                     </div>
                   </div>
@@ -453,7 +450,7 @@ export function Hero() {
 
                   {/* Privacy / WhatsApp Notice */}
                   <p className="text-[11px] text-center text-slate-500 pt-1">
-                    🔒 Direct submission to our care desk on WhatsApp (+91-8865888772). No spam ever.
+                    🔒 Direct submission to our care desk on WhatsApp (8865888772). No spam ever.
                   </p>
                 </form>
               ) : (

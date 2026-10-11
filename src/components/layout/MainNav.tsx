@@ -209,36 +209,6 @@ export function MainNav() {
                       </div>
                     </div>
                   )}
-
-                  {/* Dropdown Menu for Cities */}
-                  {hasChildren && isOpen && item.label === "Cities" && (
-                    <div
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 p-5 min-w-[280px] z-50 animate-in fade-in slide-in-from-top-2 duration-200"
-                      onMouseEnter={() => handleMegaMenuEnter(item.label)}
-                      onMouseLeave={handleMegaMenuLeave}
-                    >
-                      <div className="flex items-center gap-2 pb-2.5 mb-2 border-b border-slate-100">
-                        <MapPin className="w-4 h-4 text-primary" />
-                        <span className="font-bold text-slate-800 text-xs">
-                          Delhi NCR Service Coverage
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-1">
-                        {item.children!.map((child) => (
-                          <Link
-                            key={child.href}
-                            href={child.href}
-                            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-50 text-slate-700 hover:text-primary text-xs font-medium transition-colors"
-                            onClick={() => setMegaMenuOpen(null)}
-                          >
-                            <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
-                            <span>{child.label}</span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               );
             })}

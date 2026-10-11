@@ -7,9 +7,9 @@ export interface LabPackage {
   name: string;
   slug: string;
   category: "Full Body" | "Essential" | "Senior Citizen" | "Organ Specific" | "Specialized";
-  price: number;
-  originalPrice: number;
-  parametersCount: number;
+  price: string;
+  originalPrice: string;
+  parametersCount: number | string;
   fastingRequired: boolean;
   fastingHours?: number;
   sampleType: string;
@@ -26,8 +26,8 @@ export const labPackages: LabPackage[] = [
     name: "Kreeta Comprehensive Full Body Health Checkup",
     slug: "comprehensive-full-body-checkup",
     category: "Full Body",
-    price: 1999,
-    originalPrice: 4500,
+    price: "On Call",
+    originalPrice: "On Call",
     parametersCount: 68,
     fastingRequired: true,
     fastingHours: 10,
@@ -53,8 +53,8 @@ export const labPackages: LabPackage[] = [
     name: "Senior Citizen Advanced Care Package",
     slug: "senior-citizen-health-package",
     category: "Senior Citizen",
-    price: 2499,
-    originalPrice: 5500,
+    price: "On Call",
+    originalPrice: "On Call",
     parametersCount: 74,
     fastingRequired: true,
     fastingHours: 10,
@@ -82,8 +82,8 @@ export const labPackages: LabPackage[] = [
     name: "Diabetes & Glycemic Monitor Package",
     slug: "diabetes-monitoring-package",
     category: "Organ Specific",
-    price: 799,
-    originalPrice: 1600,
+    price: "On Call",
+    originalPrice: "On Call",
     parametersCount: 12,
     fastingRequired: true,
     fastingHours: 8,
@@ -106,8 +106,8 @@ export const labPackages: LabPackage[] = [
     name: "Healthy Heart & Lipid Panel",
     slug: "cardiac-lipid-panel",
     category: "Organ Specific",
-    price: 999,
-    originalPrice: 2200,
+    price: "On Call",
+    originalPrice: "On Call",
     parametersCount: 16,
     fastingRequired: true,
     fastingHours: 12,
@@ -129,8 +129,8 @@ export const labPackages: LabPackage[] = [
     name: "Thyroid & Metabolic Function Test",
     slug: "thyroid-metabolic-panel",
     category: "Organ Specific",
-    price: 499,
-    originalPrice: 1100,
+    price: "On Call",
+    originalPrice: "On Call",
     parametersCount: 3,
     fastingRequired: false,
     sampleType: "Blood",
@@ -149,8 +149,8 @@ export const labPackages: LabPackage[] = [
     name: "Complete Blood Count (CBC) with ESR",
     slug: "cbc-esr-test",
     category: "Essential",
-    price: 349,
-    originalPrice: 700,
+    price: "On Call",
+    originalPrice: "On Call",
     parametersCount: 24,
     fastingRequired: false,
     sampleType: "Blood (EDTA)",
@@ -171,8 +171,8 @@ export const labPackages: LabPackage[] = [
     name: "Vitamin D3 & Vitamin B12 Duo Panel",
     slug: "vitamin-d-b12-duo",
     category: "Specialized",
-    price: 1199,
-    originalPrice: 2800,
+    price: "On Call",
+    originalPrice: "On Call",
     parametersCount: 2,
     fastingRequired: false,
     sampleType: "Blood",
@@ -190,8 +190,8 @@ export const labPackages: LabPackage[] = [
     name: "Liver & Kidney Vital Duo (LFT + KFT)",
     slug: "liver-kidney-duo",
     category: "Organ Specific",
-    price: 999,
-    originalPrice: 2100,
+    price: "On Call",
+    originalPrice: "On Call",
     parametersCount: 19,
     fastingRequired: true,
     fastingHours: 8,

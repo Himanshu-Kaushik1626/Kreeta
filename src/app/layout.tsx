@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     template: "%s | Kreeta Nursing Service",
   },
   description:
-    "Trusted home healthcare services in Delhi NCR. Qualified nurses, trained caretakers, physiotherapy, medical equipment on rent, and lab tests at home. Available 24x7. Call +91-8865888772.",
+    "Trusted home healthcare services in Delhi NCR. Qualified nurses, trained caretakers, physiotherapy, medical equipment on rent, and lab tests at home. Available 24x7. Call 8865888772.",
   keywords: [
     "home nursing Delhi NCR",
     "nurse at home Noida",
@@ -70,7 +70,7 @@ export default function RootLayout({
     "@type": "MedicalBusiness",
     "name": "Kreeta Nursing Service",
     "url": "https://kreetanursingservice.com",
-    "telephone": "+91-8865888772",
+    "telephone": "8865888772",
     "email": "info@kreetanursingservice.com",
     "description": "Professional home healthcare, nursing care, caretaker, physiotherapy, and medical equipment rental serving Delhi NCR 24x7.",
     "address": {

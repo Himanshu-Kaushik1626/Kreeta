@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { PHONE, PHONE_RAW, WHATSAPP_URL } from "@/lib/constants";
+import { PHONE, PHONE_RAW, WHATSAPP_PHONE } from "@/lib/constants";
 
 /**
  * High-contrast final CTA banner before the footer with crisp, readable text and buttons.
@@ -52,7 +52,7 @@ export function CTABanner() {
           </a>
 
           <a
-            href={`https://wa.me/${PHONE_RAW}?text=${encodeURIComponent("Hi Kreeta Nursing Service, I want to inquire about home healthcare services.")}`}
+            href={`https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent("Hi Kreeta Nursing Service, I want to inquire about home healthcare services.")}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-4 rounded-xl font-bold text-base bg-emerald-600 hover:bg-emerald-500 text-white transition-all duration-200 shadow-lg"

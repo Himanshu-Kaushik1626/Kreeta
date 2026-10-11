@@ -74,7 +74,7 @@ export default function AccountDashboardClient() {
                 <h1 className="text-xl sm:text-2xl font-bold text-text font-[family-name:var(--font-heading)]">
                   Welcome, Ramesh Das
                 </h1>
-                <p className="text-xs text-text-muted">+91 98112 34567 • Noida, Uttar Pradesh</p>
+                <p className="text-xs text-text-muted">98112 34567 • Noida, Uttar Pradesh</p>
               </div>
             </div>
 

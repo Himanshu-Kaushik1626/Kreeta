@@ -5,7 +5,7 @@ import Image from "next/image";
 import { X, Send, HeartPulse, MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { PHONE_RAW, WHATSAPP_URL, CITIES } from "@/lib/constants";
+import { PHONE_RAW, WHATSAPP_PHONE, WHATSAPP_URL, CITIES } from "@/lib/constants";
 import { isValidPhone } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { services } from "@/data/services";
@@ -32,18 +32,33 @@ export function NeedServicePopup() {
   }, []);
 
   useEffect(() => {
-    // Don't show if already dismissed this session
-    if (
-      sessionStorage.getItem("kreeta-needservice-dismissed") ||
-      sessionStorage.getItem("kreeta-callback-submitted")
-    ) {
-      return;
+    // Don't show if already dismissed this session or already submitted
+    try {
+      if (
+        localStorage.getItem("kreeta-needservice-submitted") ||
+        localStorage.getItem("kreeta-callback-submitted") ||
+        sessionStorage.getItem("kreeta-needservice-dismissed") ||
+        sessionStorage.getItem("kreeta-needservice-submitted") ||
+        sessionStorage.getItem("kreeta-callback-submitted")
+      ) {
+        return;
+      }
+    } catch {
+      // Storage access check fallback
     }
 
-    // Show after 10 seconds
+    // Show after 30 seconds
     const timer = setTimeout(() => {
+      try {
+        if (
+          localStorage.getItem("kreeta-needservice-submitted") ||
+          localStorage.getItem("kreeta-callback-submitted")
+        ) {
+          return;
+        }
+      } catch {}
       setShow(true);
-    }, 10000);
+    }, 30000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -67,7 +82,7 @@ export function NeedServicePopup() {
       `🏥 *New Service Inquiry — Kreeta Nursing Service*`,
       ``,
       `*Name:* ${name.trim()}`,
-      `*Phone:* +91-${phone}`,
+      `*Phone:* ${phone}`,
       service ? `*Service:* ${service}` : "",
       city ? `*City:* ${city}` : "",
       message ? `*Message:* ${message}` : "",
@@ -77,11 +92,16 @@ export function NeedServicePopup() {
       .filter(Boolean)
       .join("\n");
 
-    const waUrl = `https://wa.me/${PHONE_RAW}?text=${encodeURIComponent(waMessage)}`;
+    const waUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(waMessage)}`;
     window.open(waUrl, "_blank");
 
     setSubmitted(true);
-    sessionStorage.setItem("kreeta-callback-submitted", "true");
+    try {
+      localStorage.setItem("kreeta-needservice-submitted", "true");
+      localStorage.setItem("kreeta-callback-submitted", "true");
+      sessionStorage.setItem("kreeta-needservice-submitted", "true");
+      sessionStorage.setItem("kreeta-callback-submitted", "true");
+    } catch {}
   };
 
   const handleKeyDown = useCallback(
@@ -203,19 +223,16 @@ export function NeedServicePopup() {
                       />
 
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-text-muted">
-                          +91
-                        </span>
                         <input
                           type="tel"
-                          placeholder="Mobile Number *"
+                          placeholder="Mobile Number (10 Digits) *"
                           value={phone}
                           onChange={(e) =>
                             setPhone(
                               e.target.value.replace(/\D/g, "").slice(0, 10)
                             )
                           }
-                          className="w-full pl-12 pr-4 py-3 rounded-[var(--radius-md)] border border-border bg-background text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm"
+                          className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-border bg-background text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm"
                         />
                       </div>
 

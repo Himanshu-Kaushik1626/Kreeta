@@ -299,12 +299,9 @@ export function ServiceDetailClient({
                       />
 
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-text-muted">
-                          +91
-                        </span>
                         <input
                           type="tel"
-                          placeholder="Mobile number"
+                          placeholder="10-digit mobile number"
                           value={bookingForm.phone}
                           onChange={(e) =>
                             setBookingForm({
@@ -312,7 +309,7 @@ export function ServiceDetailClient({
                               phone: e.target.value.replace(/\D/g, "").slice(0, 10),
                             })
                           }
-                          className="w-full pl-12 pr-4 py-3 rounded-[var(--radius-md)] border border-border bg-background text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm"
+                          className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-border bg-background text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm"
                           required
                         />
                       </div>

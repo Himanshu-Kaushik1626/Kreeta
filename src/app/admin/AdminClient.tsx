@@ -56,7 +56,7 @@ export default function AdminClient() {
     {
       id: "KRT-2026-9182",
       patientName: "Nirmala Devi (72y)",
-      phone: "+91 98112 34567",
+      phone: "98112 34567",
       service: "Nursing Care at Home",
       city: "Noida Sector 75",
       shift: "12h Day (30 Days)",
@@ -68,7 +68,7 @@ export default function AdminClient() {
     {
       id: "KRT-2026-9180",
       patientName: "Dr. O. P. Gupta (81y)",
-      phone: "+91 98711 22334",
+      phone: "98711 22334",
       service: "General Duty Assistant (GDA)",
       city: "Greater Noida West",
       shift: "24h Live-in",
@@ -80,7 +80,7 @@ export default function AdminClient() {
     {
       id: "KRT-2026-9175",
       patientName: "Kavita Mehra (65y)",
-      phone: "+91 99990 88776",
+      phone: "99990 88776",
       service: "Physiotherapy at Home",
       city: "Delhi (South Ext)",
       shift: "10 Sessions Package",
@@ -92,7 +92,7 @@ export default function AdminClient() {
     {
       id: "KRT-2026-9168",
       patientName: "Col. S. K. Bakshi (79y)",
-      phone: "+91 98101 55443",
+      phone: "98101 55443",
       service: "ICU Setup & Critical Care",
       city: "Gurgaon Phase 2",
       shift: "24h Dual Nursing",
@@ -104,7 +104,7 @@ export default function AdminClient() {
     {
       id: "KRT-2026-9150",
       patientName: "Anjali Saxena (45y)",
-      phone: "+91 98765 43210",
+      phone: "98765 43210",
       service: "Post-Surgical Dressing",
       city: "Ghaziabad (Indirapuram)",
       shift: "Per Visit",
@@ -119,7 +119,7 @@ export default function AdminClient() {
     {
       id: "INQ-402",
       name: "Suresh Mathur",
-      phone: "+91 98188 99001",
+      phone: "98188 99001",
       service: "Urgent Injection / IV Cannulation",
       city: "Noida Sector 50",
       time: "10 mins ago",
@@ -128,7 +128,7 @@ export default function AdminClient() {
     {
       id: "INQ-401",
       name: "Rekha Chawla",
-      phone: "+91 98733 44556",
+      phone: "98733 44556",
       service: "Oxygen Concentrator 5L Rental",
       city: "Greater Noida (Gaur City 2)",
       time: "45 mins ago",
@@ -137,7 +137,7 @@ export default function AdminClient() {
     {
       id: "INQ-400",
       name: "Amit Singhal",
-      phone: "+91 99100 11223",
+      phone: "99100 11223",
       service: "Elderly Caretaker 12h Night",
       city: "Faridabad Sector 15",
       time: "2 hours ago",

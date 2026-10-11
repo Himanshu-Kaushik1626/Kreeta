@@ -31,7 +31,7 @@ export const cities: CityData[] = [
       "Kreeta Nursing Service brings trusted, professional healthcare to your doorstep across Delhi. From trained nurses and caretakers to physiotherapy, lab tests, and medical equipment — we are here for your family, 24 hours a day.",
     metaTitle: "Home Nursing Services in Delhi | Nurse at Home Delhi | Kreeta",
     metaDescription:
-      "Book qualified nurses, caretakers, physiotherapists, and medical equipment at home in Delhi. 24x7 availability. Police-verified staff. Call +91-8865888772.",
+      "Book qualified nurses, caretakers, physiotherapists, and medical equipment at home in Delhi. 24x7 availability. Police-verified staff. Call 8865888772.",
     areas: [
       { name: "South Delhi", popular: true },
       { name: "Dwarka", popular: true },
@@ -64,7 +64,7 @@ export const cities: CityData[] = [
       "Serving every sector of Noida with qualified nurses, experienced caretakers, and comprehensive home healthcare. We understand the fast-paced life here — our services are designed to fit your schedule.",
     metaTitle: "Home Nursing Services in Noida | Nurse at Home Noida | Kreeta",
     metaDescription:
-      "Book trained nurses, caretakers, physiotherapy, and medical equipment at home in Noida. 24x7 service. Verified staff. Call +91-8865888772.",
+      "Book trained nurses, caretakers, physiotherapy, and medical equipment at home in Noida. 24x7 service. Verified staff. Call 8865888772.",
     areas: [
       { name: "Sector 18", popular: true },
       { name: "Sector 62", popular: true },
@@ -97,7 +97,7 @@ export const cities: CityData[] = [
       "From Gaur City to Pari Chowk, Kreeta Nursing Service delivers professional healthcare at home across Greater Noida. Our trained staff is just a call away, day or night.",
     metaTitle: "Home Nursing Services in Greater Noida | Kreeta Nursing Service",
     metaDescription:
-      "Professional home nursing, caretaker, physiotherapy, and equipment rental services in Greater Noida. 24x7. Police-verified. Call +91-8865888772.",
+      "Professional home nursing, caretaker, physiotherapy, and equipment rental services in Greater Noida. 24x7. Police-verified. Call 8865888772.",
     areas: [
       { name: "Gaur City", popular: true },
       { name: "Pari Chowk", popular: true },
@@ -130,7 +130,7 @@ export const cities: CityData[] = [
       "From DLF to Sohna Road, Kreeta brings hospital-quality care to your Gurgaon home. Our nurses, therapists, and care coordinators are available around the clock.",
     metaTitle: "Home Nursing Services in Gurgaon | Nurse at Home Gurugram | Kreeta",
     metaDescription:
-      "Book qualified nurses, physiotherapy, elderly care, and medical equipment at home in Gurgaon. 24x7 availability. Call +91-8865888772.",
+      "Book qualified nurses, physiotherapy, elderly care, and medical equipment at home in Gurgaon. 24x7 availability. Call 8865888772.",
     areas: [
       { name: "DLF Phase 1-5", popular: true },
       { name: "Sohna Road", popular: true },
@@ -159,7 +159,7 @@ export const cities: CityData[] = [
       "Quality home healthcare is now accessible across Faridabad. Whether you live in NIT, Sector 15, or Ballabgarh — Kreeta's trained nursing staff is ready to help.",
     metaTitle: "Home Nursing Services in Faridabad | Kreeta Nursing Service",
     metaDescription:
-      "Trusted home nursing, caretaker, and physiotherapy services in Faridabad. Medical equipment on rent. 24x7. Call +91-8865888772.",
+      "Trusted home nursing, caretaker, and physiotherapy services in Faridabad. Medical equipment on rent. 24x7. Call 8865888772.",
     areas: [
       { name: "NIT Faridabad", popular: true },
       { name: "Sector 15", popular: true },
@@ -188,7 +188,7 @@ export const cities: CityData[] = [
       "From Indirapuram to Vaishali, Kreeta Nursing Service delivers professional, compassionate home care across Ghaziabad. Our verified team is available 24x7.",
     metaTitle: "Home Nursing Services in Ghaziabad | Kreeta Nursing Service",
     metaDescription:
-      "Book home nurses, caretakers, physiotherapy, and medical equipment in Ghaziabad. 24x7 service. Verified staff. Call +91-8865888772.",
+      "Book home nurses, caretakers, physiotherapy, and medical equipment in Ghaziabad. 24x7 service. Verified staff. Call 8865888772.",
     areas: [
       { name: "Indirapuram", popular: true },
       { name: "Vaishali", popular: true },

@@ -45,18 +45,6 @@ export const mainNavItems: NavItem[] = [
     ],
   },
   { label: "Lab Tests", href: "/lab-tests" },
-  {
-    label: "Cities",
-    href: "/#cities",
-    children: [
-      { label: "Noida", href: "/city/noida" },
-      { label: "Greater Noida", href: "/city/greater-noida" },
-      { label: "Delhi (NCR)", href: "/city/delhi" },
-      { label: "Gurgaon (Gurugram)", href: "/city/gurgaon" },
-      { label: "Ghaziabad", href: "/city/ghaziabad" },
-      { label: "Faridabad", href: "/city/faridabad" },
-    ],
-  },
   { label: "Careers", href: "/careers" },
   { label: "Contact", href: "/contact" },
 ];

@@ -21,7 +21,6 @@ import {
   Sparkles,
 } from "lucide-react";
 import { labPackages, LabPackage } from "@/data/labTests";
-import { useCart } from "@/context/CartContext";
 import { PHONE, WHATSAPP_MSG } from "@/lib/constants";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
@@ -30,9 +29,6 @@ export default function LabTestsClient() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [expandedPackage, setExpandedPackage] = useState<string | null>(null);
-  const [addedItem, setAddedItem] = useState<string | null>(null);
-
-  const { addItem } = useCart();
 
   const categories = ["All", "Full Body", "Senior Citizen", "Essential", "Organ Specific", "Specialized"];
 
@@ -45,20 +41,6 @@ export default function LabTestsClient() {
       pkg.testsIncluded.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
-
-  const handleAddToCart = (pkg: LabPackage) => {
-    addItem({
-      id: pkg.id,
-      type: "lab-test",
-      title: pkg.name,
-      price: pkg.price,
-      quantity: 1,
-      slug: pkg.slug,
-    });
-
-    setAddedItem(pkg.id);
-    setTimeout(() => setAddedItem(null), 2000);
-  };
 
   return (
     <>
@@ -148,10 +130,6 @@ export default function LabTestsClient() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredPackages.map((pkg) => {
               const isExpanded = expandedPackage === pkg.id;
-              const discountPercent = Math.round(
-                ((pkg.originalPrice - pkg.price) / pkg.originalPrice) * 100
-              );
-
               return (
                 <div
                   key={pkg.id}
@@ -246,40 +224,31 @@ export default function LabTestsClient() {
                     <div>
                       <div className="flex items-baseline gap-2">
                         <span className="text-2xl font-black text-primary">
-                          ₹{pkg.price.toLocaleString("en-IN")}
+                          On Call
                         </span>
-                        <span className="text-xs text-text-muted line-through">
-                          ₹{pkg.originalPrice.toLocaleString("en-IN")}
-                        </span>
-                        <span className="text-xs font-bold text-emerald-600">
-                          {discountPercent}% OFF
+                        <span className="text-xs text-text-muted font-medium">
+                          (Customized Quote)
                         </span>
                       </div>
                       <span className="text-[10px] text-text-muted">
-                        Free home collection on orders above ₹500
+                        Free home collection available across Delhi NCR
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <Button
-                        variant={addedItem === pkg.id ? "accent" : "primary"}
-                        size="sm"
-                        onClick={() => handleAddToCart(pkg)}
-                      >
-                        {addedItem === pkg.id ? (
-                          <>
-                            <Check className="w-3.5 h-3.5 mr-1" /> Added
-                          </>
-                        ) : (
-                          <>
-                            <ShoppingCart className="w-3.5 h-3.5 mr-1" /> Book Home Sample
-                          </>
-                        )}
-                      </Button>
+                      <Link href="/booking">
+                        <Button
+                          variant="primary"
+                          size="sm"
+                        >
+                          <ShoppingCart className="w-3.5 h-3.5 mr-1" /> Book Home Sample
+                        </Button>
+                      </Link>
                       <a
-                        href={WHATSAPP_MSG(`Hi Kreeta, I want to book the ${pkg.name} (₹${pkg.price}) for home sample collection.`)}
+                        href={WHATSAPP_MSG(`Hi Kreeta, I want to book the ${pkg.name} for home sample collection.`)}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label="WhatsApp us about this test"
                       >
                         <Button variant="outline" size="sm">
                           <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />

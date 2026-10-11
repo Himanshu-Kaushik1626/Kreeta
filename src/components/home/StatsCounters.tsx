@@ -9,7 +9,7 @@ const stats = [
   { icon: Users, value: 5000, suffix: "+", label: "Patients Served" },
   { icon: Stethoscope, value: 200, suffix: "+", label: "Healthcare Professionals" },
   { icon: MapPin, value: 6, suffix: "", label: "Cities Covered" },
-  { icon: Star, value: 4.8, suffix: "/5", label: "Average Rating" },
+  { icon: Star, value: 4.9, suffix: "/5", label: "Average Rating" },
 ];
 
 /**
