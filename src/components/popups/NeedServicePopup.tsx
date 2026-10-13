@@ -5,15 +5,21 @@ import Image from "next/image";
 import { X, Send, HeartPulse, MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { PHONE_RAW, WHATSAPP_PHONE, WHATSAPP_URL, CITIES } from "@/lib/constants";
-import { isValidPhone } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { WHATSAPP_PHONE, WHATSAPP_URL, CITIES } from "@/lib/constants";
+import { isValidPhone, cn } from "@/lib/utils";
 import { services } from "@/data/services";
 import { Button } from "@/components/ui/Button";
+import {
+  isLeadFormSuppressed,
+  suppressAllLeadForms,
+  claimLeadPopup,
+  releaseLeadPopup,
+} from "@/lib/popupState";
 
 /**
  * "Need a Service?" lead-generation popup.
- * Appears after 10s on first visit. Form data is sent directly to WhatsApp.
+ * Shows after 25s on first visit if no lead form has been cancelled or submitted.
+ * Once cancelled or submitted, it is permanently silenced across all sessions.
  */
 export function NeedServicePopup() {
   const [show, setShow] = useState(false);
@@ -28,37 +34,23 @@ export function NeedServicePopup() {
 
   const dismiss = useCallback(() => {
     setShow(false);
-    sessionStorage.setItem("kreeta-needservice-dismissed", "true");
+    releaseLeadPopup("needservice");
+    // Permanently suppress all lead popups once user cancels
+    suppressAllLeadForms(false);
   }, []);
 
   useEffect(() => {
-    // Don't show if already dismissed this session or already submitted
-    try {
-      if (
-        localStorage.getItem("kreeta-needservice-submitted") ||
-        localStorage.getItem("kreeta-callback-submitted") ||
-        sessionStorage.getItem("kreeta-needservice-dismissed") ||
-        sessionStorage.getItem("kreeta-needservice-submitted") ||
-        sessionStorage.getItem("kreeta-callback-submitted")
-      ) {
-        return;
-      }
-    } catch {
-      // Storage access check fallback
+    // If already suppressed (cancelled or submitted), do not attach timers
+    if (isLeadFormSuppressed()) {
+      return;
     }
 
-    // Show after 30 seconds
+    // Delay 25s before showing
     const timer = setTimeout(() => {
-      try {
-        if (
-          localStorage.getItem("kreeta-needservice-submitted") ||
-          localStorage.getItem("kreeta-callback-submitted")
-        ) {
-          return;
-        }
-      } catch {}
-      setShow(true);
-    }, 30000);
+      if (claimLeadPopup("needservice")) {
+        setShow(true);
+      }
+    }, 25000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -96,12 +88,8 @@ export function NeedServicePopup() {
     window.open(waUrl, "_blank");
 
     setSubmitted(true);
-    try {
-      localStorage.setItem("kreeta-needservice-submitted", "true");
-      localStorage.setItem("kreeta-callback-submitted", "true");
-      sessionStorage.setItem("kreeta-needservice-submitted", "true");
-      sessionStorage.setItem("kreeta-callback-submitted", "true");
-    } catch {}
+    // Permanently suppress all lead popups once user submits
+    suppressAllLeadForms(true);
   };
 
   const handleKeyDown = useCallback(
@@ -136,12 +124,13 @@ export function NeedServicePopup() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[500]"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[500] cursor-pointer"
             onClick={dismiss}
+            aria-hidden="true"
           />
 
           {/* Dialog */}
-          <div className="fixed inset-0 z-[501] flex items-end md:items-center justify-center p-4">
+          <div className="fixed inset-0 z-[501] flex items-end md:items-center justify-center p-4 pointer-events-none">
             <motion.div
               initial={
                 isMobile
@@ -161,7 +150,7 @@ export function NeedServicePopup() {
               aria-modal="true"
               aria-labelledby="needservice-title"
               className={cn(
-                "bg-white shadow-2xl w-full max-w-[500px] relative overflow-hidden",
+                "bg-white shadow-2xl w-full max-w-[500px] relative overflow-hidden pointer-events-auto",
                 isMobile
                   ? "rounded-t-[var(--radius-xl)] max-h-[90vh] overflow-y-auto"
                   : "rounded-[var(--radius-xl)]"
@@ -177,13 +166,13 @@ export function NeedServicePopup() {
                 </div>
               )}
 
-              {/* Close button */}
+              {/* Close button — easy to dismiss */}
               <button
                 onClick={dismiss}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors z-10"
-                aria-label="Close"
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors z-10 text-gray-500 hover:text-gray-800"
+                aria-label="Close form"
               >
-                <X className="w-4 h-4 text-gray-400" />
+                <X className="w-4 h-4" />
               </button>
 
               <div className="p-6 md:p-8">
@@ -191,10 +180,10 @@ export function NeedServicePopup() {
                   <>
                     {/* Header with logo */}
                     <div className="flex items-center gap-4 mb-5">
-                      <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-md flex-shrink-0">
+                      <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-md shrink-0">
                         <Image
                           src="/images/brand/logo.jpeg"
-                          alt="Kreeta"
+                          alt="Kreeta Nursing Service"
                           width={56}
                           height={56}
                           className="w-full h-full object-cover"
@@ -205,10 +194,10 @@ export function NeedServicePopup() {
                           id="needservice-title"
                           className="text-xl font-bold text-text font-[family-name:var(--font-heading)]"
                         >
-                          Need a Service?
+                          Need a Healthcare Service?
                         </h2>
                         <p className="text-sm text-text-secondary">
-                          Fill in your details — we will contact you instantly!
+                          Fill in your details — our care coordinator will reach out!
                         </p>
                       </div>
                     </div>
@@ -242,7 +231,7 @@ export function NeedServicePopup() {
                           onChange={(e) => setService(e.target.value)}
                           className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-border bg-background text-text focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all appearance-none text-sm"
                         >
-                          <option value="">Service</option>
+                          <option value="">Select Service</option>
                           {services.map((s) => (
                             <option key={s.id} value={s.shortTitle}>
                               {s.shortTitle}
@@ -255,7 +244,7 @@ export function NeedServicePopup() {
                           onChange={(e) => setCity(e.target.value)}
                           className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-border bg-background text-text focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all appearance-none text-sm"
                         >
-                          <option value="">City</option>
+                          <option value="">Select City</option>
                           {CITIES.map((c) => (
                             <option key={c} value={c}>
                               {c}
@@ -265,7 +254,7 @@ export function NeedServicePopup() {
                       </div>
 
                       <textarea
-                        placeholder="Brief message (optional)"
+                        placeholder="Brief requirement notes (optional)"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         rows={2}
@@ -299,14 +288,14 @@ export function NeedServicePopup() {
                       </a>
                       <button
                         onClick={dismiss}
-                        className="text-sm text-text-muted hover:text-text transition-colors"
+                        className="text-sm text-text-muted hover:text-text transition-colors cursor-pointer"
                       >
-                        Maybe later
+                        Don&apos;t show again
                       </button>
                     </div>
 
                     <p className="mt-3 text-[11px] text-text-muted text-center">
-                      Your details are sent directly to our WhatsApp for instant
+                      Your details are sent directly to our team for quick
                       response. We respect your privacy.
                     </p>
                   </>
@@ -317,18 +306,18 @@ export function NeedServicePopup() {
                       <HeartPulse className="w-8 h-8 text-success" />
                     </div>
                     <h3 className="text-lg font-bold text-text mb-2">
-                      Request Sent Successfully!
+                      Inquiry Sent Successfully!
                     </h3>
                     <p className="text-sm text-text-secondary mb-2">
                       Thank you, <strong>{name}</strong>. Your inquiry has been
-                      sent to our team via WhatsApp.
+                      sent to our care coordinator via WhatsApp.
                     </p>
                     <p className="text-sm text-text-secondary mb-6">
                       We will contact you within <strong>15 minutes</strong>.
                     </p>
                     <button
                       onClick={dismiss}
-                      className="text-sm text-primary font-semibold hover:underline"
+                      className="text-sm text-primary font-semibold hover:underline cursor-pointer"
                     >
                       Close this window
                     </button>

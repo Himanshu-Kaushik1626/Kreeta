@@ -3,29 +3,28 @@
 import React, { useEffect, useCallback } from "react";
 import { MapPin, Navigation, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CITIES, type City } from "@/lib/constants";
+import { CITIES } from "@/lib/constants";
 import { useCity } from "@/context/CityContext";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
 
 /**
  * City selector popup shown on first visit.
- * Cannot be closed via backdrop click — must select a city.
+ * Fully accessible and dismissible via backdrop click, Escape key, or Close button
+ * to satisfy Google Ads and UX accessibility standards.
  */
 export function CitySelector() {
-  const { showCitySelector, setCity, setShowCitySelector } = useCity();
+  const { showCitySelector, setCity, dismissCitySelector } = useCity();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  // Trap focus
+  // Trap focus / Escape key
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape" && showCitySelector) {
-        // Allow Esc only if user has already selected a city before
-        const saved = localStorage.getItem("kreeta-city");
-        if (saved) setShowCitySelector(false);
+        dismissCitySelector();
       }
     },
-    [showCitySelector, setShowCitySelector]
+    [showCitySelector, dismissCitySelector]
   );
 
   useEffect(() => {
@@ -48,16 +47,18 @@ export function CitySelector() {
     <AnimatePresence>
       {showCitySelector && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop (clickable to dismiss) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-overlay backdrop-blur-sm z-[var(--z-modal-backdrop)]"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[var(--z-modal-backdrop)] cursor-pointer"
+            onClick={dismissCitySelector}
+            aria-hidden="true"
           />
 
           {/* Dialog */}
-          <div className="fixed inset-0 z-[var(--z-modal)] flex items-end md:items-center justify-center p-4">
+          <div className="fixed inset-0 z-[var(--z-modal)] flex items-end md:items-center justify-center p-4 pointer-events-none">
             <motion.div
               initial={
                 isMobile
@@ -77,7 +78,7 @@ export function CitySelector() {
               aria-modal="true"
               aria-labelledby="city-selector-title"
               className={cn(
-                "bg-white shadow-popup border border-border-light w-full max-w-md",
+                "bg-white shadow-popup border border-border-light w-full max-w-md pointer-events-auto relative",
                 isMobile
                   ? "rounded-t-[var(--radius-xl)] pb-safe"
                   : "rounded-[var(--radius-xl)]"
@@ -90,16 +91,14 @@ export function CitySelector() {
                 </div>
               )}
 
-              {/* Close button (only if already selected a city) */}
-              {localStorage.getItem("kreeta-city") && (
-                <button
-                  onClick={() => setShowCitySelector(false)}
-                  className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-primary-50 transition-colors"
-                  aria-label="Close"
-                >
-                  <X className="w-4 h-4 text-text-muted" />
-                </button>
-              )}
+              {/* Close button — always accessible for Google Ads compliance */}
+              <button
+                onClick={dismissCitySelector}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-primary-50 text-text-muted hover:text-text transition-colors z-10"
+                aria-label="Close city selection"
+              >
+                <X className="w-4 h-4" />
+              </button>
 
               <div className="p-6 md:p-8">
                 <h2
@@ -119,7 +118,7 @@ export function CitySelector() {
                     <button
                       key={city}
                       onClick={() => setCity(city)}
-                      className="flex items-center gap-3 p-4 rounded-[var(--radius-md)] border-2 border-border hover:border-primary hover:bg-primary-50 transition-all text-left group"
+                      className="flex items-center gap-3 p-4 rounded-[var(--radius-md)] border-2 border-border hover:border-primary hover:bg-primary-50 transition-all text-left group cursor-pointer"
                     >
                       <MapPin className="w-5 h-5 text-text-muted group-hover:text-primary transition-colors shrink-0" />
                       <span className="font-medium text-text group-hover:text-primary transition-colors">
@@ -129,10 +128,13 @@ export function CitySelector() {
                   ))}
                 </div>
 
-                {/* Use location */}
-                <button className="flex items-center justify-center gap-2 w-full mt-4 py-3 text-sm text-primary hover:text-primary-dark transition-colors">
+                {/* Use default / location */}
+                <button
+                  onClick={() => setCity("Delhi")}
+                  className="flex items-center justify-center gap-2 w-full mt-4 py-3 text-sm text-primary hover:text-primary-dark transition-colors cursor-pointer"
+                >
                   <Navigation className="w-4 h-4" />
-                  <span>Use my current location</span>
+                  <span>Delhi NCR (Default Location)</span>
                 </button>
               </div>
             </motion.div>

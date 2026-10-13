@@ -4,16 +4,21 @@ import React, { useState, useEffect, useCallback } from "react";
 import { X, Phone, MessageCircle, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { PHONE_RAW, WHATSAPP_PHONE, WHATSAPP_URL } from "@/lib/constants";
-import { isValidPhone } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { WHATSAPP_PHONE, WHATSAPP_URL } from "@/lib/constants";
+import { isValidPhone, cn } from "@/lib/utils";
 import { services } from "@/data/services";
 import { Button } from "@/components/ui/Button";
+import {
+  isLeadFormSuppressed,
+  suppressAllLeadForms,
+  claimLeadPopup,
+  releaseLeadPopup,
+} from "@/lib/popupState";
 
 /**
  * Callback request popup.
- * Triggers: 25s delay, exit-intent on desktop, 50% scroll on mobile.
- * Once per session. Sends form data to WhatsApp.
+ * Triggers on desktop exit-intent or long dwell time (50s).
+ * Once cancelled or submitted, it is permanently silenced across all sessions.
  */
 export function CallbackRequest() {
   const [show, setShow] = useState(false);
@@ -28,56 +33,46 @@ export function CallbackRequest() {
 
   const dismiss = useCallback(() => {
     setShow(false);
-    sessionStorage.setItem("kreeta-callback-dismissed", "true");
+    releaseLeadPopup("callback");
+    // Permanently suppress all lead popups once user cancels
+    suppressAllLeadForms(false);
   }, []);
 
   useEffect(() => {
-    // Don't show if already dismissed, submitted, or NeedService popup was dismissed
-    if (
-      sessionStorage.getItem("kreeta-callback-dismissed") ||
-      sessionStorage.getItem("kreeta-callback-submitted") ||
-      localStorage.getItem("kreeta-callback-submitted") ||
-      sessionStorage.getItem("kreeta-needservice-dismissed")
-    ) {
+    // If already suppressed (cancelled or submitted), do not attach timers
+    if (isLeadFormSuppressed()) {
       return;
     }
 
-    // Wait 5s before allowing any popup (global rule)
+    // Wait 15s before listening for exit-intent or delayed popup
     const delayTimer = setTimeout(() => {
-      // 25-second timer
-      const showTimer = setTimeout(() => setShow(true), 40000);
+      if (isLeadFormSuppressed()) return;
 
-      // Exit intent on desktop
-      const handleMouseLeave = (e: MouseEvent) => {
-        if (e.clientY <= 0) {
+      // 50-second timer fallback
+      const showTimer = setTimeout(() => {
+        if (!isLeadFormSuppressed() && claimLeadPopup("callback")) {
           setShow(true);
         }
-      };
+      }, 50000);
 
-      // 50% scroll on mobile
-      const handleScroll = () => {
-        const scrollPercent =
-          (window.scrollY /
-            (document.documentElement.scrollHeight - window.innerHeight)) *
-          100;
-        if (scrollPercent >= 50) {
-          setShow(true);
-          window.removeEventListener("scroll", handleScroll);
+      // Exit intent on desktop only
+      const handleMouseLeave = (e: MouseEvent) => {
+        if (e.clientY <= 0 && !isLeadFormSuppressed()) {
+          if (claimLeadPopup("callback")) {
+            setShow(true);
+          }
         }
       };
 
       if (!isMobile) {
         document.addEventListener("mouseleave", handleMouseLeave);
-      } else {
-        window.addEventListener("scroll", handleScroll, { passive: true });
       }
 
       return () => {
         clearTimeout(showTimer);
         document.removeEventListener("mouseleave", handleMouseLeave);
-        window.removeEventListener("scroll", handleScroll);
       };
-    }, 10000);
+    }, 15000);
 
     return () => clearTimeout(delayTimer);
   }, [isMobile]);
@@ -117,8 +112,8 @@ export function CallbackRequest() {
 
     setSubmitted(true);
     setLoading(false);
-    sessionStorage.setItem("kreeta-callback-submitted", "true");
-    localStorage.setItem("kreeta-callback-submitted", String(Date.now()));
+    // Permanently suppress all lead popups once user submits
+    suppressAllLeadForms(true);
   };
 
   const handleKeyDown = useCallback(
@@ -153,12 +148,13 @@ export function CallbackRequest() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-overlay backdrop-blur-sm z-[var(--z-modal-backdrop)]"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[var(--z-modal-backdrop)] cursor-pointer"
             onClick={dismiss}
+            aria-hidden="true"
           />
 
           {/* Dialog */}
-          <div className="fixed inset-0 z-[var(--z-modal)] flex items-end md:items-center justify-center p-4">
+          <div className="fixed inset-0 z-[var(--z-modal)] flex items-end md:items-center justify-center p-4 pointer-events-none">
             <motion.div
               initial={
                 isMobile
@@ -178,7 +174,7 @@ export function CallbackRequest() {
               aria-modal="true"
               aria-labelledby="callback-title"
               className={cn(
-                "bg-white shadow-popup border border-border-light w-full max-w-[440px] relative",
+                "bg-white shadow-popup border border-border-light w-full max-w-[440px] pointer-events-auto relative",
                 isMobile
                   ? "rounded-t-[var(--radius-xl)]"
                   : "rounded-[var(--radius-xl)]"
@@ -194,10 +190,10 @@ export function CallbackRequest() {
               {/* Close */}
               <button
                 onClick={dismiss}
-                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-primary-50 transition-colors"
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-primary-50 text-text-muted hover:text-text transition-colors"
                 aria-label="Close"
               >
-                <X className="w-4 h-4 text-text-muted" />
+                <X className="w-4 h-4" />
               </button>
 
               <div className="p-6 md:p-8">
@@ -210,11 +206,10 @@ export function CallbackRequest() {
                       id="callback-title"
                       className="text-xl font-bold text-text mb-1 font-[family-name:var(--font-heading)]"
                     >
-                      Need help choosing a service?
+                      Need help choosing care?
                     </h2>
                     <p className="text-sm text-text-secondary mb-6">
-                      Share your number and our care coordinator will call you
-                      shortly.
+                      Share your number and our clinical coordinator will call you back shortly.
                     </p>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -235,7 +230,7 @@ export function CallbackRequest() {
                           placeholder="Your name"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm"
                         />
                       </div>
 
@@ -247,14 +242,14 @@ export function CallbackRequest() {
                           onChange={(e) =>
                             setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
                           }
-                          className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-border bg-surface text-text placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm"
                         />
                       </div>
 
                       <select
                         value={service}
                         onChange={(e) => setService(e.target.value)}
-                        className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-border bg-surface text-text focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all appearance-none"
+                        className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-border bg-surface text-text focus:border-primary focus:ring-2 focus:ring-primary-100 outline-none transition-all appearance-none text-sm"
                       >
                         <option value="">Select a service (optional)</option>
                         {services.map((s) => (
@@ -275,7 +270,7 @@ export function CallbackRequest() {
                         loading={loading}
                         icon={<Phone className="w-4 h-4" />}
                       >
-                        Send via WhatsApp
+                        Request Callback via WhatsApp
                       </Button>
                     </form>
 
@@ -291,9 +286,9 @@ export function CallbackRequest() {
                       </a>
                       <button
                         onClick={dismiss}
-                        className="text-sm text-text-muted hover:text-text transition-colors"
+                        className="text-sm text-text-muted hover:text-text transition-colors cursor-pointer"
                       >
-                        Not now
+                        Don&apos;t show again
                       </button>
                     </div>
 
@@ -302,7 +297,7 @@ export function CallbackRequest() {
                       <a href="/privacy" className="underline hover:text-primary">
                         Privacy Policy
                       </a>
-                      . We will not share your information with third parties.
+                      . Your information is confidential.
                     </p>
                   </>
                 ) : (

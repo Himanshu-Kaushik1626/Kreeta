@@ -8,6 +8,7 @@ interface CityContextType {
   setCity: (city: City) => void;
   showCitySelector: boolean;
   setShowCitySelector: (show: boolean) => void;
+  dismissCitySelector: () => void;
 }
 
 const CityContext = createContext<CityContextType | undefined>(undefined);
@@ -17,25 +18,42 @@ export function CityProvider({ children }: { children: React.ReactNode }) {
   const [showCitySelector, setShowCitySelector] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("kreeta-city");
-    if (saved) {
-      setSelectedCity(saved as City);
-    } else {
-      // Show city selector on first visit after a short delay
-      const timer = setTimeout(() => setShowCitySelector(true), 1500);
-      return () => clearTimeout(timer);
+    try {
+      const saved = localStorage.getItem("kreeta-city");
+      if (saved) {
+        setSelectedCity(saved as City);
+      } else {
+        // Show city selector on first visit after a short delay
+        const timer = setTimeout(() => setShowCitySelector(true), 1500);
+        return () => clearTimeout(timer);
+      }
+    } catch {
+      // Storage access fallback
     }
   }, []);
 
   const setCity = useCallback((city: City) => {
     setSelectedCity(city);
-    localStorage.setItem("kreeta-city", city);
+    try {
+      localStorage.setItem("kreeta-city", city);
+    } catch {}
+    setShowCitySelector(false);
+  }, []);
+
+  const dismissCitySelector = useCallback(() => {
+    try {
+      const saved = localStorage.getItem("kreeta-city");
+      if (!saved) {
+        localStorage.setItem("kreeta-city", "Delhi");
+        setSelectedCity("Delhi");
+      }
+    } catch {}
     setShowCitySelector(false);
   }, []);
 
   return (
     <CityContext.Provider
-      value={{ selectedCity, setCity, showCitySelector, setShowCitySelector }}
+      value={{ selectedCity, setCity, showCitySelector, setShowCitySelector, dismissCitySelector }}
     >
       {children}
     </CityContext.Provider>

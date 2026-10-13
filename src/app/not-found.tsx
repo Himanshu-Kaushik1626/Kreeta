@@ -18,7 +18,7 @@ export default function NotFound() {
           Page Not Found
         </h1>
         <p className="text-xs text-text-secondary mb-6 leading-relaxed">
-          The page you are looking for might have been moved or doesn't exist. But our healthcare team is always right here to assist you.
+          The page you are looking for might have been moved or does not exist. But our healthcare team is always right here to assist you.
         </p>
 
         <div className="flex flex-col gap-2.5 mb-6">
